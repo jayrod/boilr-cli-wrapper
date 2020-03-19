@@ -43,7 +43,7 @@ def insert_md_table(markdown: str, md_table: str) -> None:
     else:
         content += md_table
 
-    with open(markdown, "w") as m_file:
+    with open(markdown, "a") as m_file:
         m_file.write(content)
 
 def run_binary({{binary}}_bin: str, options: dict) -> CompletedProcess:
@@ -248,7 +248,7 @@ def main():
         if not Path(args.text).parent.exists():
             Path(args.text).parent.mkdir(parents=True)
 
-        with open(args.text, "a+") as text_file:
+        with open(args.text, "a") as text_file:
             text_file.write("\n")
             text_file.write(text)
         
