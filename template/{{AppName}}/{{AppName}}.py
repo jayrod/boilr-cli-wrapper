@@ -16,53 +16,31 @@ from pathlib import Path
 from shutil import which
 from subprocess import CompletedProcess, run
 from typing import Tuple
+from threading import Thread
 
 from inquirer import Confirm, prompt
-from markdown_table import Table
 from tabulate import tabulate
 
 from {{AppName}}.Util import Util
+from {{AppName}}.markdown import Markdown
 
 
-def insert_md_table(markdown: str, md_table: str) -> None:
-    """ Inserts a markdown table into a document at a given tag placement.
-
-        Arguments:
-            markdown(str): Path to markdown file
-            md_table(str): Markdown table text to be inserted
-
-    """
-    content = open(markdown, "r").read(-1)
-
-    # regex
-    regex = r"\[\[\s?{{NoteTag}}\s?\]\]"
-
-    # if there exists a tag then substitute our data into it
-    if re.findall(regex, content):
-        content = re.sub(regex, md_table, content)
-    else:
-        content += md_table
-
-    with open(markdown, "a") as m_file:
-        m_file.write(content)
-
-def run_binary({{binary}}_bin: str, options: dict) -> CompletedProcess:
+def run_binary({{binary}}_bin: str, options: dict, completed: list) -> CompletedProcess:
     """ Runs the {{binary}} command with given options.
 
         Arguments:
             {{binary}}_bin(str): Path string to {{binary}}
             options(dict): dictionary containing options needed for running
+            completed(list) : List that will hold completed process output
 
-        Returns:
-            CompletedProcess: Output from {{binary}}
     """
     cmd = list()
     cmd.extend([{{binary}}_bin])
     cmd.extend([])
 
-    output = run(cmd, capture_output=True)
+    print(Util().msg("Begin : {{binary}}")
+    completed.append(run(cmd, capture_output=True))
 
-    return output
 
 def validate_input(args) -> ip_address:
     """ Validates and formulates user input. This function can make default
@@ -165,7 +143,6 @@ def process_json_output(args):
         [add_json_file(json_files, output_file) for output_file in output_files]
 
 
-
 def render_tab_table(columns: list, full_table: list) -> str:
     return tabulate(full_table, headers=columns, tablefmt="fancy_grid")
 
@@ -206,7 +183,19 @@ def main():
 
     print(Util().msg("Located {{binary}} binary : {0}".format({{binary}}_bin)))
 
-    cmd_output = run_binary({{binary}}_bin, str(ip))
+
+    #####get options
+    options = {}
+
+    #####
+
+    process_outputs = list()
+
+    thread = Thread(target=run_binary, args=####)
+    thread.start()
+    thread.join()
+
+
     if cmd_output.returncode:
         print(Util().err_msg("{{binary}} returned with an error code"))
         print("Error : {0}\nOutput : {1}".format(cmd_output.stderr, cmd_output.stdout))
@@ -222,11 +211,8 @@ def main():
     # create column and output data
     columns, table = info_to_table(output)
 
-    # if Output file given then write output to it
-    if args.markdown:
-        print(Util().msg("Writing markdown to file"))
-        md_table = render_md_table(columns, table)
-        insert_md_table(args.markdown, md_table)
+    #save output to markdown file
+    Markdown().output(args, columns, table)
 
     # if json argument given then write to file
     if args.json:
