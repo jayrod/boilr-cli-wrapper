@@ -2,6 +2,7 @@ from glob import iglob
 from json.decoder import JSONDecodeError
 from os import curdir
 from pathlib import Path
+from shutil import which
 
 
 class Util:

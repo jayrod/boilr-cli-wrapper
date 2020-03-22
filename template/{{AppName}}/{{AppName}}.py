@@ -38,7 +38,7 @@ def run_binary({{binary}}_bin: str, options: dict, completed: list) -> Completed
     cmd.extend([{{binary}}_bin])
     cmd.extend([])
 
-    print(Util().msg("Begin : {{binary}}")
+    print(Util().msg("Begin : {{binary}}"))
     completed.append(run(cmd, capture_output=True))
 
 
