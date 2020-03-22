@@ -49,6 +49,6 @@ class Markdown:
         # if Output file given then write output to it
         if args.markdown:
             md_table = self.render_md_table(columns, table)
-            Markdown().insert_md_table(args.markdown, md_table)
+            Markdown().insert_md_table(args.markdown, md_table, "{{NoteTag}}")
 
 
